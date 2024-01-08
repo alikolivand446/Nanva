@@ -1,0 +1,29 @@
+﻿ @{ 
+  var UserAvatar = Nanva.Function.PublicContent<Nanva.Model.Models.User>.Instance.GetImageByUserName(User.Identity.Name);
+ }
+<aside>
+        <div class="avatar-layer">
+            <div class="img-layer">
+                <img src="~/Content/images/UserImages/@(string.IsNullOrEmpty(UserAvatar)?"Default.png":UserAvatar)">
+            </div>
+            <div class="detail">
+                <span> @User.Identity.Name </span>
+            </div>
+        </div>
+        <section>
+            <header>
+                <h3> میز کار </h3>
+            </header>
+            <div class="inner">
+                <ul>
+                    <li><a href="@Url.Action("Index", "Users",new { area="UserPanel"})"> مشاهده حساب کابری </a></li>
+                    <li><a href="@Url.Action("EditProfile", "Users",new { area="UserPanel"})"> ویرایش حساب کابری </a></li>
+                    <li><a href="@Url.Action("ChengePassword", "Users",new { area="UserPanel"})"> تغییر رمز عبور </a></li>
+                    <li><a href="@Url.Action("index", "Request",new { area="UserPanel"})"> درخواست ها </a></li>
+                    <li><a href="@Url.Action("index", "Car",new { area="UserPanel"})"> ماشین‌ها </a></li>
+                    <li><a href="@Url.Action("LogOut", "Home",new { area=""})"> خروج از حساب کاربری </a></li>
+                </ul>
+            </div>
+        </section>
+    </aside>
+ 

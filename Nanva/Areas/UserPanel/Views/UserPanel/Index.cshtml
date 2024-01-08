@@ -1,0 +1,48 @@
+﻿@model Nanva.Model.Models.User
+@using Nanva.Function.Convertors
+@{
+    var s = Model.RegisterDate;
+    ViewData["Title"] = "پنل کاربری " + HttpContext.Current.User.Identity.Name;
+}
+<link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-rtl.min.css">
+<link rel="stylesheet" type="text/css" href="~/Content/css/material-design-iconic-font.min.css">
+<link rel="stylesheet" type="text/css" href="~/Content/css/style.css">
+<link href="~/Content/css/CustomCss.css" rel="stylesheet" />
+
+<div class="container">
+    <nav aria-label="breadcrumb">
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">آنی سرویس </a></li>
+            <li class="breadcrumb-item active" aria-current="page"> پنل کاربری </li>
+        </ul>
+    </nav>
+</div>
+<main>
+    <div class="container">
+        <div class="user-account">
+            <div class="row">
+                <div class="col-md-3 col-sm-4 col-xs-12">
+                    @RenderPage("~/Areas/UserPanel/Views/Shared/_SiteBarRigthUserPanelPartialView.cshtml" ,false)
+                </div>
+                <div class="col-md-9 col-sm-8 col-xs-12">
+                    <section class="user-account-content">
+                        <header>
+                            <h1> داشبورد </h1>
+                        </header>
+                        <div class="inner">
+                            <div class="account-information">
+                                <h3> اطلاعات کاربری </h3>
+                                <ul>
+                                    <li> <i class="zmdi zmdi-assignment-account"></i> نام کاربری : @User.Identity.Name </li>
+                                    <li> <i class="zmdi zmdi-email"></i> تلفن : @Model.Phone </li>
+                                    <li> <i class="zmdi zmdi-calendar-check"></i> تاریخ عضویت : @(Nanva.Function.Convertors.DateTimeConvertor.ToShamsi(Model.RegisterDate)) </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>

@@ -1,0 +1,94 @@
+﻿@model Nanva.Function.Role
+@{
+    ViewData["Title"] = "اضافه کردن نقش";
+    List<Nanva.Function.Permission> ListPermission = ViewData["ListPermission"] as List<Nanva.Function.Permission>;
+    string truee = ViewData["Issuccess"] as string;
+}
+<div class="col-md-12 row">
+    @if (truee == "true" || truee == "false"|| truee == "True" || truee == "False")
+    {
+        <div class="col-md-12 container">
+            <div class="col-md-12 alert @(truee=="true"|| truee == "True"?"alert-success":"alert-danger")" role="alert" id="Alertdiv">
+                @(truee == "true" || truee == "True" ? "نقش جدید ثبت شد" : "عملیات انجام نشد!")
+            </div>
+        </div>
+        <script>
+            setTimeout(function () { $('#Alertdiv').hide(); $("Input").val(""); }, 3500);
+        </script>
+    }
+</div>
+@using (Html.BeginForm())
+{
+    @Html.HiddenFor(model => model.Id)
+    <div class=" col-md-7 ">
+        <div class="card ">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">ثبت نقش جدید</h6>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
+                    @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = " form-control" } })
+                    @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.NameEn, htmlAttributes: new { @class = "control-label col-md-2" })
+                    @Html.EditorFor(model => model.NameEn, new { htmlAttributes = new { @class = " form-control" } })
+                    @Html.ValidationMessageFor(model => model.NameEn, "", new { @class = "text-danger" })
+                </div>
+                <button type="submit" class="btn btn-success">ثبت</button>
+            </div>
+        </div>
+    </div>
+    <div class=" col-md-5 ">
+        <div class="card ">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">دسترسی</h6>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <ul>
+                        @foreach (var item in ListPermission)
+                        {
+                            if (item.ParentId == null)
+                            {
+                                <li>
+                                    <input type="checkbox"  name="SelectedPermission" @(item.Id==9?"onclick=All("+item.Id+")":"")  value="@item.Id" />@item.PermissionTitle
+                                    <ul>
+                                        @foreach (var item2 in ListPermission)
+                                        {
+                                            if (item2.ParentId == item.Id)
+                                            {
+                                                <li>
+                                                    <input type="checkbox" id="@item2.Id" onclick="sub(@item.Id)" name="SelectedPermission" value="@item2.Id" />@item2.PermissionTitle
+                                                </li>
+                                            }
+                                        }
+                                    </ul>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+    function sub(res) {
+        $("input[value='" + res + "']").attr("checked", true);
+    }
+
+    function All(id) {
+        var checked= $("input[Value='" + id + "']:checked").length;
+        if (checked == 1) {
+            $('input[name^="SelectedPermission"]').attr("checked", true);
+        }
+        if (checked == 0) {
+            $('input[name^="SelectedPermission"]').attr("checked", false);
+        }
+    }
+
+</script>
+

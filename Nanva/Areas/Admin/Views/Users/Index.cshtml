@@ -1,0 +1,134 @@
+﻿@model IEnumerable<Nanva.Model.Models.User>
+@using Nanva.Function;
+@{
+    ViewData["Title"] = "لیست کاربران";
+    string Issuccess = ViewData["Issuccess"] as string;
+}
+<div class="col-md-12 container hidden " id="alertdiv">
+    <div class="col-md-3 alert" role="alert" id="alertText">
+
+    </div>
+</div>
+<div class="col-lg-12">
+    <div class="card mb-4">
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">لیست کاربران</h6>
+        </div>
+        <div class="table-responsive p-3">
+            <div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4">
+                <div class="row">
+                    <div class="col-sm-12 col-md-11">
+                        <div id="dataTable_filter" class="dataTables_filter">
+                            <form>
+                                <div class=" formm col-sm-2 col-md-2">
+                                    <input type="text" name="filterusername" class="form-control" placeholder="نام کاربری" />
+                                </div>
+                                <div class=" formm col-sm-2 col-md-2">
+                                    <input type="text" name="filteremail" class="form-control " placeholder="ایمیل" />
+                                </div>
+                                <div class="btnnn col-sm-2 col-md-2">
+                                    <div class="ol-sm-4 col-md-4">
+                                        <a href="/Nanva/Admin/Users" class="btn btn-sm btn-danger ">
+                                            <i class=" fas fa-trash"></i>
+                                        </a>
+                                    </div>
+                                    <div class="ol-sm-8 col-md-8">
+                                        <input type="submit" class="btn btn-sm btn-success" value="جستوجو" />
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <table class="table align-items-center table-flush dataTable" id="dataTable" role="grid" aria-describedby="dataTable_info">
+                            <thead class="thead-light">
+                                <tr role="row">
+                                    <th class="sorting_asc " tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column descending" style="width: 192px;">نام کاربری</th>
+                                    <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 310px;">ایمیل</th>
+                                    <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 310px;">نقش</th>
+                                    <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending" style="width: 145px;">تاریخ ثبت نام</th>
+                                    <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Start date: activate to sort column ascending" style="width: 127px;">وضعیت</th>
+                                    <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 119px;"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr role="row" class="odd">
+                                        <td class="sorting_1">@item.UserName</td>
+                                        <td>@item.Person.Email</td>
+                                        <td>@(((Enums.Role)Enum.Parse(typeof(Enums.Role), item.Person.RoleId.ToString())).EnumPersianName())</td>
+                                        <td>@(Nanva.Function.Convertors.DateTimeConvertor.ToShamsi(item?.RegisterDate))</td>
+                                        @if (item.IsActive == true)
+                                        {
+                                            <td><span class="badge badge-success">فعال</span></td>
+                                        }
+                                        else
+                                        {
+                                            <td><span class="badge badge-danger">غیر فعال</span></td>
+                                        }
+                                        <td>
+                                            <a href="/Nanva/Admin/Users/EditUser/@item.Id" class="btn btn-sm btn-warning">
+                                                <span class="icon">
+                                                    <i class="fa fa-edit"></i>
+                                                </span>
+                                            </a>
+                                            <button href="#" onclick="RemoveUser(@item.Id)" class="btn btn-sm btn-danger ">
+                                                <span class="icon">
+                                                    <i class="fa fa-trash"></i>
+                                                </span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 col-md-4">
+                    </div>
+                    <div class="col-sm-12 col-md-5">
+                        <div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate">
+                            <ul class="pagination">
+                                @for (int i = 1; i <= Model.Count()/10; i++)
+                                {
+                                    <li class="borderdokme paginate_button page-item active">
+                                        <a href="/Nanva/Admin/Users/?pageId=@i" class="page-link">
+                                            @i
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function RemoveUser(Id) {
+        $.ajax({
+            type: "POST",
+            url: "/Nanva/Admin/Users/DeleteUser?Id=" + Id,
+            success: function (res) {
+                if (res === "true" || res === "True") {
+                    $('#alertText').html("عملیات با موفقیت انجام شد.")
+                    $('#alertdiv').addClass("alert-success");
+                    $('#alertdiv').removeClass("hidden");
+                    $(window).scrollTop(0);
+                    var delay = 2000;
+                    setTimeout(function () { window.location = "/Nanva/Admin/Users"; }, delay);
+                } else {
+                    $('#alertText').html("عملیات انجام نشد دوباره سعی کنید.");
+                    $('#alertdiv').addClass("alert-danger");
+                    $('#alertdiv').removeClass("hidden");
+                    $(window).scrollTop(0);
+                }
+            }
+        });
+    }
+</script>

@@ -1,0 +1,56 @@
+﻿@model Nanva.Function.AgentRequest
+@{
+    ViewData["Title"] = "انتخاب کارشناس";
+    var AgentList = ViewBag.AgentList as List<SelectListItem>;
+    string Issuccess = ViewData["Issuccess"] as string;
+}
+    <style>
+        .InputCreate {
+            display: block;
+            width: 100%;
+            height: 30px;
+            padding: 0.375rem 0.75rem;
+            font-size: 10px;
+            font-weight: 100;
+            line-height: 0.5;
+            color: #6e707e;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #d1d3e2;
+            border-radius: 0.25rem;
+        }
+    </style>
+@if (Issuccess == "true")
+{
+    <div class="col-md-12">
+        <p class="alert alert-success">
+            کاربر ویرایش شد.
+        </p>
+    </div>
+    <script>
+        // Your delay in milliseconds
+        var delay = 1000;
+        setTimeout(function () { window.location = "/Nanva/Admin/Request/Index"; }, delay);
+    </script>
+}
+<form method="post" enctype="multipart/form-data">
+    @Html.HiddenFor(model => model.RequestId)
+    <div class=" col-md-7 ">
+        <div class="card ">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">انتخاب کارشناس</h6>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.AgentId, htmlAttributes: new { @class = "TextLabel" })
+                    <div class="col-md-12">
+                        @Html.DropDownListFor(model => model.AgentId, new SelectList(AgentList, "Value", "Text"), "انتخاب کنید", new { @class = " InputCreate" })
+                        @Html.ValidationMessageFor(model => model.AgentId)
+                    </div>
+                </div>
+                <button style="float: left; margin: 10px;" type="submit" class="btn btn-primary">ثبت</button>
+            </div>
+        </div>
+    </div>
+</form>
+

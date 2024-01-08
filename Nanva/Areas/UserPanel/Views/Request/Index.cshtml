@@ -1,0 +1,86 @@
+﻿@model IEnumerable<Nanva.Function.Request>
+@using Nanva.Function;
+@{
+    ViewData["Title"] = "پنل کاربری " + HttpContext.Current.User.Identity.Name;
+}
+<link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-rtl.min.css">
+<link rel="stylesheet" type="text/css" href="~/Content/css/material-design-iconic-font.min.css">
+<link rel="stylesheet" type="text/css" href="~/Content/css/style.css">
+<link href="~/Content/css/CustomCss.css" rel="stylesheet" />
+<div class="container">
+    <nav aria-label="breadcrumb">
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">آنی سرویس </a></li>
+            <li class="breadcrumb-item active" aria-current="page"> پنل کاربری </li>
+            <li class="breadcrumb-item active" aria-current="page"> درخواست ها </li>
+        </ul>
+    </nav>
+</div>
+<main>
+    <div class="container">
+        <div class="user-account">
+            <div class="row">
+                <div class="col-md-3 col-sm-4 col-xs-12">
+                    @RenderPage("~/Areas/UserPanel/Views/Shared/_SiteBarRigthUserPanelPartialView.cshtml", false)
+                </div>
+                <div class="col-md-9 col-sm-8 col-xs-12">
+                    <section class="user-account-content" style="height:500px;">
+                        <div class="row">
+                            <div class="right container hidden" style="border-radius:5px;" id="alertdiv">
+                                <div class="col-md-3 alert" role="alert" id="alertText">
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="col-md-12">
+                            <a href="/Nanva/UserPanel/Request/Create" class="btn btn-sm btn-success">ثبت درخواست </a>
+                        </div>
+                        <div class="row col-md-12 inner form-layer">
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th>ردیف</th>
+                                    <th>ماشین</th>
+                                    <th>نوع درخواست</th>
+                                    <th>وضعیت</th>
+                                    <th>تاریخ</th>
+                                    <th>عملیات</th>
+                                </tr>
+                                @{ var count = 1;}
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            @(count++)
+                                        <td>
+                                            @item.CarName
+                                        </td>
+                                        <td>
+                                            @item.TypeName
+                                        <td>
+                                            @item.WorkFlowTypeName
+                                        </td>
+                                        <td>
+                                            @item.RequestDateFa
+                                        </td>
+                                        <td>
+                                            @if (item.WorkFlowType == (byte)Enums.RequestWorkFlow.Register)
+                                            {
+                                                <a href="/Nanva/UserPanel/Request/Edit/@item.Id?Added=false" class="btn btn-warning btn-sm"><i class="fa fa-edit">ویرایش</i></a>
+                                                <a href="#" onclick="RemoveRequest('@item.Id')" class="btn btn-danger btn-sm"><i class="fa fa-trash">حذف</i></a>
+                                            }
+                                            @if (item.Type == (byte)Enums.RequestType.RepairFaceToFace && item.WorkFlowType == (byte)Enums.RequestWorkFlow.Register)
+                                            {
+                                                <a href="/Nanva/UserPanel/Request/Map?Show=true&&LatLngUser=@item.Lat,@item.Lng" class="btn btn-info btn-sm"><i class="fa fa-edit">اطلاعات</i></a>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>

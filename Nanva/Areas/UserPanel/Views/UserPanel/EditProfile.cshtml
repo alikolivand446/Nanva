@@ -1,0 +1,153 @@
+﻿@model Nanva.Function.EditProfileViewModel
+@{
+    ViewData["Title"] = "ویرایش اطلاعات";
+}
+<head>
+    <link href="~/Content/DatePicker/css/persianDatepicker-default.css" rel="stylesheet" />
+</head>
+<style>
+    label {
+        color: black;
+    }
+</style>
+<div class="container">
+    <nav aria-label="breadcrumb">
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">آنی سرویس</a></li>
+            <li class="breadcrumb-item active" aria-current="page"> ویرایش اطلاعات </li>
+        </ul>
+    </nav>
+</div>
+<main>
+    <div class="container">
+        <div class="user-account">
+            <div class="row">
+                <div class="col-md-3 col-sm-4 col-xs-12">
+                    @RenderPage("~/Areas/UserPanel/Views/Shared/_SiteBarRigthUserPanelPartialView.cshtml", false)
+                </div>
+                <div class="col-md-9 col-sm-8 col-xs-12">
+                    <section class="user-account-content" style=" height:100%;">
+                        <header><h1> ویرایش حساب کاربری </h1></header>
+                        <div class="inner form-layer">
+                            @if (ViewBag.Issuccess == true)
+                            {
+                                <div id="divalert" class="alert alert-success ">
+                                    پروفایل  شما با  موفقیت تغییر یافت
+                                </div>
+                            }
+                            else if (ViewBag.Issuccess == false)
+                            {
+                                <div id="divalert" class="alert alert-danger  ">
+                                    پروفایل  تغییر نکرد دوباره تلاش کنید.
+                                </div>
+                            }
+                            @if (ViewBag.Issuccess != null)
+                            {
+                                <script>
+                                    var delay = 4000;
+                                    setTimeout(function () {
+                                        $('#divalert').hide();
+                                    }, delay);
+                                </script>
+                            }
+                            <form name="EditProfile" method="post" enctype="multipart/form-data" >
+                                @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                                <input type="hidden" Name="Avatar" />
+                                <div class="row">
+                                    <div class="col-md-12">
+
+                                        <div class="col-md-6 col-sm-8 col-xs-12">
+                                            @Html.LabelFor(model => model.UserName)
+                                            <div class="input-group">
+                                                @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control", } })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-sm-8 col-xs-12">
+                                            @Html.LabelFor(model => model.Email)
+                                            <div class="input-group">
+                                                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", } })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+
+                                        <div class="col-md-6 col-sm-8 col-xs-12">
+                                            @Html.LabelFor(model => model.Fname)
+                                            <div class="input-group">
+                                                @Html.EditorFor(model => model.Fname, new { htmlAttributes = new { @class = "form-control", } })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-sm-8 col-xs-12">
+                                            @Html.LabelFor(model => model.Lname)
+                                            <div class="input-group">
+                                                @Html.EditorFor(model => model.Lname, new { htmlAttributes = new { @class = "form-control", } })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+
+                                        <div class="col-md-6 col-sm-8 col-xs-12">
+                                            @Html.LabelFor(model => model.NationalCode)
+                                            <div class="input-group">
+                                                @Html.EditorFor(model => model.NationalCode, new { htmlAttributes = new { @class = "form-control", } })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-sm-8 col-xs-12">
+                                            @Html.LabelFor(model => model.Phone)
+                                            <div class="input-group">
+                                                @Html.EditorFor(model => model.Phone, new { htmlAttributes = new { @class = "form-control", } })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="col-md-6 col-sm-8 col-xs-12">
+                                            @Html.LabelFor(model => model.Birthday)
+                                            <div class="input-group">
+                                                @Html.EditorFor(model => model.Birthday, new { htmlAttributes = new { @class = "form-control", @Id = "persianDatapicker" } })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    @Html.LabelFor(model => model.Address)
+                                    <div class="col-md-12">
+                                        @Html.TextAreaFor(model => model.Address, new { @class = "form-control", @style = "width:100%;" })
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="col-md-7 col-sm-8 col-xs-12">
+                                        <div class="input-group">
+                                            <input name="Image" type="file" id="ImageFile" />
+                                        </div>
+                                        <div id="ImageUpload">
+                                            <img id="user_img" s class="thumbnail" style="max-width: 150px" />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-7 col-sm-8 col-xs-12">
+                                        <button type="submit" class="btn btn-success"> ویرایش اطلاعات </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<script src="~/Content/DatePicker/js/persianDatepicker.min.js"></script>
+<script>
+    $("#persianDatapicker").persianDatepicker();
+
+    function show(input) {
+        if (input.files && input.files[0]) {
+            var filerdr = new FileReader();
+            filerdr.onload = function (e) {
+            $('#user_img').attr('src', e.target.result);
+        }
+        filerdr.readAsDataURL(input.files[0]);
+        }
+    }
+</script>

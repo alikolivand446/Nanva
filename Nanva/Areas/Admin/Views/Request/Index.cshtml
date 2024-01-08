@@ -1,0 +1,131 @@
+﻿@model IEnumerable<Nanva.Function.Request>
+    @using Nanva.Function;
+@{
+    ViewData["Title"] = "درخواست‌ها";
+    string Issuccess = ViewData["Issuccess"] as string;
+}
+<div class="row">
+    <div class="right container hidden" style="border-radius:5px; " id="alertdiv">
+        <div class="col-md-3 alert" style="height:10px;" role="alert" id="alertText">
+        </div>
+    </div>
+</div>
+<div class="col-lg-12">
+    <div class="card mb-4">
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">درخواست ها</h6>
+        </div>
+        <div class="table-responsive p-3">
+            <div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4">
+                @*<div class="row">
+                        <div class="col-sm-12 col-md-11">
+                            <div id="dataTable_filter" class="dataTables_filter">
+                                <form>
+                                    <div class=" formm col-sm-2 col-md-2">
+                                        <input type="text" name="filterusername" class="form-control" placeholder="نام کاربری" />
+                                    </div>
+                                    <div class=" formm col-sm-2 col-md-2">
+                                        <input type="text" name="filteremail" class="form-control " placeholder="ایمیل" />
+                                    </div>
+                                    <div class="btnnn col-sm-2 col-md-2">
+                                        <div class="ol-sm-4 col-md-4">
+                                            <a href="/Admin/Users" class="btn btn-sm btn-danger ">
+                                                <i class=" fas fa-trash"></i>
+                                            </a>
+                                        </div>
+                                        <div class="ol-sm-8 col-md-8">
+                                            <input type="submit" class="btn btn-sm btn-success" value="جستوجو" />
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>*@
+                <div class="row">
+                    <div class="col-sm-12">
+                        <table class="table align-items-center table-flush dataTable" id="dataTable" role="grid" aria-describedby="dataTable_info">
+                            <thead class="thead-light">
+                                <tr role="row">
+                                    <th class="sorting_asc " tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column descending" style="width: 150px;">نوع درخواست</th>
+                                    <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 150px;">مرحله درخواست</th>
+                                    <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending" style="width: 200px;">نام درخواست کننده</th>
+                                    <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Start date: activate to sort column ascending" style="width: 127px;">نام  ماشین</th>
+                                    <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Start date: activate to sort column ascending" style="width: 127px;">تاریخ درخواست</th>
+                                    <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 119px;">عملیات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr role="row" class="odd">
+                                        <td class="sorting_1">@item.TypeName</td>
+                                        <td>@item.WorkFlowTypeName</td>
+                                        <td>@item.PersonName</td>
+                                        <td>@item.CarName</td>
+                                        <td>@(item.RequestDateFa)</td>
+                                        <td>
+                                            @if (item.WorkFlowType == (byte)Enums.RequestWorkFlow.Register)
+                                            {
+                                                <a href="/Nanva/Admin/Request/Agent/@item.Id" class="btn btn-sm btn-info">
+                                                    <span class="icon">
+                                                        <i class="fa fa-user-circle"></i>
+                                                    </span>
+                                                </a>
+                                            }
+                                            <button  onclick="RemoveUser(@item.Id)" class="btn btn-sm btn-danger ">
+                                                <span class="icon">
+                                                    <i class="fa fa-trash"></i>
+                                                </span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 col-md-4">
+                    </div>
+                    <div class="col-sm-12 col-md-5">
+                        <div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate">
+                            <ul class="pagination">
+                                @for (int i = 1; i <= Model.Count(); i++)
+                                {
+                                    <li class="borderdokme paginate_button page-item active">
+                                        <a href="/Admin/Request/?pageId=@i" class="page-link">
+                                            @i
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function RemoveUser(Id) {
+        $.ajax({
+            type: "POST",
+            url: "/Nanva/Admin/Request/Delete?Id=" + Id,
+            dataType: "text",
+            success: function (res) {
+                if (res === true || res === true || res === "True" || res === "true") {
+                    $('#alertText').html("عملیات با موفقیت انجام شد.")
+                    $('#alertdiv').addClass("alert-success");
+                    $('#alertdiv').removeClass("hidden");
+                    $(window).scrollTop(0);
+                    setTimeout(function () { window.location = "/Nanva/Admin/Request"; }, 2000);
+                } else {
+                    $('#alertText').html("عملیات انجام نشد دوباره سعی کنید.");
+                    $('#alertdiv').addClass("alert-danger");
+                    $('#alertdiv').removeClass("hidden");
+                    $(window).scrollTop(0);
+                }
+            }
+        });
+    }
+</script>

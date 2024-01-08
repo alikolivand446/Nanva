@@ -1,0 +1,188 @@
+﻿@{
+    Layout = null;
+    bool? Added = ViewBag.Added as bool?;
+    bool? Show = ViewBag.Show as bool?;
+    var LatLngUser = (ViewBag.LatLngUser as string)?.Split(',');
+    var ListLatLng = ViewBag.ShowLatLng as List<string>;
+}
+<link href="~/Content/dist/css/mapp.min.css" rel="stylesheet" />
+<link href="~/Content/dist/css/fa/style.css" rel="stylesheet" />
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div id="Map" style="height:500px;">
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    @if (Show == true)
+    {
+        foreach (var item in ListLatLng)
+        {
+            var spl = item.Split(',');
+            <div class="col-md-2" style="padding:2px;">
+                <div style="border:solid 1px #818181; padding:5px; border-radius:5px;">
+                    <div class="card">
+                        <div class="card-header">
+                            مکانیکی
+                        </div>
+                        <div class="card-body">
+                            <h3 class="card-title">@spl[2]</h3>
+                            @*<p class="card-text">رسیدگی و سرویس انواع خودرو های داخلی و خارجی </p>*@
+                            <button id="Click" class="btn btn-primary" lat="@spl[0]" lng="@spl[1]" title="@spl[2]">یافتن</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>
+<script src="~/Content/dist/js/jquery-3.2.1.min.js"></script>
+<script src="~/Content/dist/js/mapp.env.js"></script>
+<script src="~/Content/dist/js/mapp.min.js"></script>
+<script>
+    var LatDefult = 32;
+    var LngDefult = 52;
+    @if (Added == false)
+    {
+        <text>
+            LatDefult = $("Input[name='Lat']").val();
+            LngDefult = $("Input[name='Lng']").val();
+        </text>
+    }
+        var app
+    $(document).ready(function () {
+            app = new Mapp({
+            element: '#Map',
+            presets: {
+            latlng: {
+                lat: LatDefult,
+                lng: LngDefult,
+                },
+                zoom: 10
+            },
+            i18n: {
+            fa: {
+                    'custom-baselayer-1': 'لایه یک',
+                    'custom-baselayer-2': 'لایه دو',
+                },
+                en: {
+                    'custom-baselayer-1': 'Baselayer one',
+                    'custom-baselayer-2': 'Baselayer two',
+                },
+            },
+            apiKey: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6ImE3MTUxYTg2NzJkZjEzYmQ2YTc0ODI2YTliYjNjY2JhM2JlODJmM2VhMTFkNGYxM2M5Y2E2ZDU5NTNmMWM0ZjcwNzljNzUzZTkxNDM1YTQ5In0.eyJhdWQiOiIxODE1NyIsImp0aSI6ImE3MTUxYTg2NzJkZjEzYmQ2YTc0ODI2YTliYjNjY2JhM2JlODJmM2VhMTFkNGYxM2M5Y2E2ZDU5NTNmMWM0ZjcwNzljNzUzZTkxNDM1YTQ5IiwiaWF0IjoxNjU0MDEzMjIzLCJuYmYiOjE2NTQwMTMyMjMsImV4cCI6MTY1NjY5MTYyMywic3ViIjoiIiwic2NvcGVzIjpbImJhc2ljIl19.G4nF-buqZnzJrKtQa-KLjGbXZycXWvXvO72okrJqjiqd-PiWFAlauZaCcL-_aGpzCiEdnkptlWS8Trc4HhnwiNCsOb4QRQTjHKIRlwPCkRXrg8CrY0GY6W4XvGIaJ0_fJrVcDy_q_9LcoeDpkPlXA7WMFg4b7C0aShfrD0TwLewkNYbZ706lNQ-nbJo7BTFjIc-MrXuEttC5t24q6qRrfT17R1WdsPM_DhmThVyJncW_3Nph4uAJl1FC4sB9YkgLAXMJ3X3vI4K3OmFk8KIOjZrHmF2UXw72wtUUziLwiBkWV5sBlhioC77Gajj4Bj4yqeu0-amgVLlkb6WSV-tGjw'
+        });
+        app.addLayers({
+            base: {
+                default: {
+                server: 'https://map.ir/shiveh',
+                    layers: 'Shiveh:Shiveh',
+                    format: 'image/png',
+                    i18n: 'custom-baselayer-1',
+                },
+                other: {
+                server: 'https://world.map.ir/shiveh',
+                    layers: 'Shiveh:ShivehNOPOI',
+                    format: 'image/png',
+                    i18n: 'custom-baselayer-2',
+                },
+            },
+            over: {},
+        });
+        app.addZoomControls();
+        @if (Added == false)
+        {
+            <text>
+        if ($("Input[name='Lat']").val() != "" || $("Input[name='Lng']").val() != "") {
+
+                app.showReverseGeocode({
+                state: {
+                    latlng: {
+                        lat: $("Input[name='Lat']").val(),
+                            lng: $("Input[name='Lng']").val(),
+                        },
+                        zoom: 16,
+                    },
+                });
+                app.addMarker({
+                name: 'advanced-marker',
+                    latlng: {
+                    lat: $("Input[name='Lat']").val(),
+                        lng: $("Input[name='Lng']").val()
+                    },
+                    icon: app.icons.red,
+                    popup: true
+                });
+            }
+        </text>
+        }
+        @if (Added == true || Added == false)
+        {
+            <text>
+                app.map.on('click', function (e) {
+                console.log("عرض" + e.latlng.lat);
+                console.log("طول" + e.latlng.lng);
+                    $("Input[name='Lat']").val(e.latlng.lat);
+                    $("Input[name='Lng']").val(e.latlng.lng);
+                app.showReverseGeocode({
+                state: {
+                    latlng: {
+                        lat: e.latlng.lat,
+                                lng: e.latlng.lng
+                            },
+                            zoom: 16
+                        }
+                });
+                app.addMarker({
+                name: 'advanced-marker',
+                        latlng: {
+                    lat: e.latlng.lat,
+                            lng: e.latlng.lng
+                        },
+                        icon: app.icons.red,
+                        popup: false
+                    });
+            });
+            </text>
+        }
+
+        @if (Show == true)
+        {
+            <text>
+            $(document).on("click", "#Click", function () {
+                $("html, body").animate({ scrollTop: 0 }, "slow");
+                var Lat = $(this).attr("lat");
+                var Lng = $(this).attr("lng");
+                var title = $(this).attr("title");
+                app.drawRoute({
+                start: [@LatLngUser[0], @LatLngUser[1]],
+                    end: [Lat, Lng],
+                    mode: 'car',
+                    draggable: true,
+                    fit: true,
+                });
+                app.addMarker({
+                name: 'basic-marker',
+                    latlng: {
+                    lat: @LatLngUser[0],
+                        lng: @LatLngUser[1],
+                    },
+                    popup: {
+                    title: {
+                        html: "مبدا",
+                        },
+                        description: {
+                        html: 'محل درخواست شما',
+                        },
+                        open: true,
+                    },
+                });
+            });
+        </text>
+        }
+    });
+</script>

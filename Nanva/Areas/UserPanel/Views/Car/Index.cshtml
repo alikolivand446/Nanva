@@ -1,0 +1,97 @@
+﻿@model IEnumerable<Nanva.Function.Car>
+@{
+    ViewData["Title"] = "پنل کاربری " + HttpContext.Current.User.Identity.Name;
+    string ResultCrude = ViewData["ResultCrude"] as string;
+}
+<link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap-rtl.min.css">
+<link rel="stylesheet" type="text/css" href="~/Content/css/material-design-iconic-font.min.css">
+<link rel="stylesheet" type="text/css" href="~/Content/css/style.css">
+<link href="~/Content/css/CustomCss.css" rel="stylesheet" />
+<div class="container">
+    <nav aria-label="breadcrumb">
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">آنی سرویس </a></li>
+            <li class="breadcrumb-item active" aria-current="page"> پنل کاربری </li>
+            <li class="breadcrumb-item active" aria-current="page"> ماشین‌ها </li>
+        </ul>
+    </nav>
+</div>
+<main>
+    <div class="container">
+        <div class="user-account">
+            <div class="row">
+                <div class="col-md-3 col-sm-4 col-xs-12">
+                    @RenderPage("~/Areas/UserPanel/Views/Shared/_SiteBarRigthUserPanelPartialView.cshtml", false)
+                </div>
+                <div class="col-md-9 col-sm-8 col-xs-12">
+                    <section class="user-account-content" style="height:500px;">
+                        <div class="row">
+                            <div class="right container hidden" style="border-radius:5px;" id="alertdiv">
+                                <div class="col-md-3 alert" role="alert" id="alertText">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row col-md-12">
+                            <a href="/Nanva/UserPanel/Car/Create" class="btn btn-sm btn-success">ثبت ماشین </a>
+                        </div>
+                        <div class="row col-md-12 inner form-layer">
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th>ردیف</th>
+                                    <th>نام ماشین</th>
+                                    <th>نام مالک</th>
+                                    <th>پلاک</th>
+                                    <th>عملیات</th>
+                                </tr>
+                                @{ var count = 1;}
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            @(count++)
+                                        <td>
+                                            @item.Name
+                                        </td>
+                                        <td>
+                                            @item.PersonName
+                                        <td>
+                                            @item.PlaqueFull
+                                        </td>
+                                        <td>
+                                            <a href="/Nanva/UserPanel/Car/Edit/@item.Id" class="btn btn-warning btn-sm"><i class="fa fa-edit">ویرایش</i></a>
+                                            <a href="#" onclick="RemoveCar(@item.Id)" class="btn btn-danger btn-sm"><i class="fa fa-trash">حذف</i></a>
+                                        </td>
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<script>
+    function RemoveCar(Id) {
+        $.ajax({
+            type: "POST",
+            url: "/Nanva/UserPanel/Car/Delete?Id=" + Id,
+            dataType: "text",
+            success: function (res) {
+                if (res === true || res === true || res === "True" || res === "true") {
+                    $('#alertText').html("عملیات با موفقیت انجام شد.")
+                    $('#alertdiv').addClass("alert-success");
+                    $('#alertdiv').removeClass("hidden");
+                    $(window).scrollTop(0);
+                    setTimeout(function () { window.location = "/Nanva/UserPanel/Car/Index"; }, 2000);
+                } else {
+                    $('#alertText').html("عملیات انجام نشد دوباره سعی کنید.");
+                    $('#alertdiv').addClass("alert-danger");
+                    $('#alertdiv').removeClass("hidden");
+                    $(window).scrollTop(0);
+                }
+            }
+        });
+    }
+</script>
